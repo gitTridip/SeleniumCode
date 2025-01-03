@@ -5,12 +5,14 @@ import java.io.FileInputStream;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 
 public class RegisterMultipleAccountInDemoWebShop {
 	static String path;
 	static String value;
+	static String presentUser;
 	public static void main(String[] args) {
 		System.setProperty("webdriver.chrome.driver", "./Drivers/chromedriver.exe");
 		WebDriver driver=new ChromeDriver();
@@ -24,7 +26,8 @@ public class RegisterMultipleAccountInDemoWebShop {
 			int cell=0;
 			driver.findElement(By.xpath("//input[@name='FirstName']")).sendKeys(value("Sheet1",i,cell++));
 			driver.findElement(By.xpath("//input[@name='LastName']")).sendKeys(value("Sheet1",i,cell++));
-			driver.findElement(By.xpath("//input[@name='Email']")).sendKeys(value("Sheet1",i,cell++));
+			presentUser =value("Sheet1",i,cell++);
+			driver.findElement(By.xpath("//input[@name='Email']")).sendKeys(presentUser);
 			driver.findElement(By.xpath("//input[@name='Password']")).sendKeys(value("Sheet1",i,cell++));
 			driver.findElement(By.xpath("//input[@name='ConfirmPassword']")).sendKeys(value("Sheet1",i,cell++),Keys.ENTER);
 			try {
@@ -34,8 +37,10 @@ public class RegisterMultipleAccountInDemoWebShop {
 				driver.findElement(By.className("ico-logout")).click();
 				Thread.sleep(750);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
+			}
+			catch (NoSuchElementException e) {
+				System.out.println("Account already registered for "+presentUser);
 			}
 		}
 		driver.quit();
